@@ -15,6 +15,7 @@ class BoardRenderer:
     Visual changes are made by replacing files in ``assets/``.
     """
 
+    PIXEL = 2
     TILE = 72
     MARGIN = 32
     SCALE = 2
@@ -118,7 +119,7 @@ class BoardRenderer:
                                dest_y[row + 1] - dest_y[row])
                 patch = frame.subsurface(source)
                 if patch.get_size() != dest.size:
-                    patch = pg.transform.smoothscale(patch, dest.size)
+                    patch = pg.transform.scale(patch, dest.size)
                 surface.blit(patch, dest)
         return surface
 
@@ -139,39 +140,60 @@ class BoardRenderer:
     def render(self, state: Snapshot, previous: Snapshot | None = None,
                progress: float = 1.0) -> pg.Surface:
         """Return one frame for ``state`` using only loaded image assets."""
+        return self._render(state.boxes, [(state.player, state.facing)],
+                            [previous.player] if previous else None,
+                            previous.boxes if previous else state.boxes, progress)
+
+    def render_competition(self, state, previous=None, progress=1.0,
+                           facings=("South", "South")):
+        moves = {}
+        if previous:
+            for old, new in zip(previous.players, state.players):
+                dx, dy = new[0]-old[0], new[1]-old[1]
+                dest = (new[0]+dx, new[1]+dy)
+                if abs(dx)+abs(dy) == 1 and new in previous.boxes and dest in state.boxes:
+                    moves[dest] = new
+        return self._render(state.boxes, list(zip(state.players, facings)),
+                            previous.players if previous else None,
+                            previous.boxes if previous else state.boxes, progress,
+                            moves, dict(state.owners), dict(previous.owners) if previous else {})
+
+    def _render(self, boxes, actors, old_players, old_boxes, progress,
+                moves=None, owners=None, old_owners=None):
         surface = self.ground.copy()
         t, m = self.tile, self.MARGIN
         progress = max(0.0, min(1.0, progress))
         eased = 1 - (1 - progress) ** 3
-        px, py = state.player
-        removed, added = set(), set()
-
-        if previous and progress < 1:
-            px = previous.player[0] + (px - previous.player[0]) * eased
-            py = previous.player[1] + (py - previous.player[1]) * eased
-            removed = previous.boxes - state.boxes
-            added = state.boxes - previous.boxes
+        if moves is None:
+            removed, added = old_boxes-boxes, boxes-old_boxes
+            moves = {next(iter(added)): next(iter(removed))} if len(removed) == len(added) == 1 else {}
 
         objects = []
         for (x, y), wall in self.walls.items():
             objects.append((y, 0, wall, (m + x * t, m + y * t - self.WALL_HEIGHT)))
 
-        for x, y in state.boxes:
+        for x, y in boxes:
             bx, by = float(x), float(y)
             on_goal = (x, y) in self.board.goals
-            if (x, y) in added and len(removed) == 1:
-                old_x, old_y = next(iter(removed))
+            owner = owners.get((x, y)) if owners is not None else None
+            if progress < 1 and (x, y) in moves:
+                old_x, old_y = moves[(x, y)]
                 bx = old_x + (x - old_x) * eased
                 by = old_y + (y - old_y) * eased
                 # Keep the departure appearance until the push reaches its end.
                 on_goal = (old_x, old_y) in self.board.goals
-            sprite = self.crates[on_goal]
+                owner = old_owners.get((old_x, old_y)) if old_owners is not None else None
+            sprite = self.crates[on_goal and owner != 1]
             objects.append((by, 1, sprite,
                             (m + bx * t, m + by * t - 12)))
 
-        bob = math.sin(progress * math.pi) * 2 if previous and progress < 1 else 0
-        objects.append((py, 2, self.people[state.facing],
-                        (m + px * t, m + py * t - 16 - bob)))
+        bob = round(math.sin(progress * math.pi) * 2) if old_players and progress < 1 else 0
+        for index, ((px, py), facing) in enumerate(actors):
+            if old_players and progress < 1:
+                ox, oy = old_players[index]
+                px, py = ox+(px-ox)*eased, oy+(py-oy)*eased
+            objects.append((py, 2, self.people[facing],
+                            (m + px * t, m + py * t - 16 - bob)))
 
         for _, _, sprite, position in sorted(objects, key=lambda item: (item[0], item[1])):
             self._blit(surface, sprite, position)

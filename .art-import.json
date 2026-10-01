@@ -1,0 +1,13 @@
+{
+  "board_frame": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-cc835342-04a7-4018-ac5b-a95984a0694b.png",
+  "floor": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-47ef5688-6d11-4cf5-a87e-7b245138ec97.png",
+  "wall_top": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-ea7f4255-4623-4d93-a427-f6ccba50b2bb.png",
+  "wall_front": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-155553e1-d385-4ff6-92b0-afe891e2ab39.png",
+  "goal": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-5493cba3-aa92-4e76-808f-4888cb2ffbcc.png",
+  "box": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-f7676cae-9586-40ab-b8f4-452ac01a146e.png",
+  "box_goal": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-692a50ad-26ae-4616-9937-8fce6fdb67f2.png",
+  "player_south": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-9df522aa-13ca-4638-ba28-233407c4deca.png",
+  "player_north": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-aa1e6ff3-45b0-469c-98c8-cd071099a411.png",
+  "player_east": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-e8892ad5-c15d-4956-8acd-ee206fef84fc.png",
+  "player_west": "C:\\Users\\anh\\.codex\\generated_images\\01a0f360-9ee9-7d02-bf5b-094d4186c379\\exec-67f7bc1d-1ef7-48c9-831c-a3fdb0e5cea1.png"
+}

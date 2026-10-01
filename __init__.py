@@ -1,1 +1,1 @@
-"""Sokoban interface and manual-play preview. No search algorithms."""
+"""Sokoban manual play, external solution replay and two-agent rules."""
